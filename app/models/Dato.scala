@@ -44,6 +44,7 @@ object Dato {
     val d = Dato(datos.length+1,dato.nombre,dato.apellido,dato.fechaNac,dato.correo)
     datos += Some(d)
     println("SAVE "+d.id)
+    d
   }
 
   def update(dato: Dato) = {

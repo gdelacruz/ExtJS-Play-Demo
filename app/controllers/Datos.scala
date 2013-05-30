@@ -16,20 +16,17 @@ object Datos extends Controller {
   def crear = Action(parse.json) { request =>
     request.body.validate[Dato].map {
       case dato => {
-        Dato.save(dato)
-        if(dato.id == 0)
-          Ok(Json.toJson(Dato.buscar))
-        else
-          Ok(Json.toJson(Map("success" -> "1", "msg" -> "Los datos de guardaron exitosamente!")))
+        val newDato = Dato.save(dato)
+         Ok(Json.obj("success" -> "true", "data" -> Json.toJson(newDato)))
       }
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest(Json.obj("success" -> "false", "msg" -> JsError.toFlatJson(e)))
     }
     //BadRequest(Json.toJson(Map("success" -> "0", "msg" -> errors.toString))),
 
   }
   def listar = Action {
-    Ok(Json.toJson(Dato.buscar))
+    Ok(Json.obj("success" -> "true", "data" -> Json.toJson(Dato.buscar)))
   }
 
   def actualizar = Action(parse.json) { request =>
@@ -37,10 +34,10 @@ object Datos extends Controller {
     request.body.validate[Dato].map {
       case dato => {
         Dato.update(dato)
-        Ok(Json.toJson(Map("success" -> "1", "msg" -> "Los datos de modificaron exitosamente!")))
+        Ok(Json.obj("success" -> "true", "data" -> Json.toJson(dato)))
       }
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest(Json.obj("success" -> "false", "msg" -> JsError.toFlatJson(e)))
     }
     //BadRequest(Json.toJson(Map("success" -> "0", "msg" -> errors.toString))),
   }
@@ -49,10 +46,11 @@ object Datos extends Controller {
 
     request.body.validate[Dato].map {
       case dato => {
-        Ok(Json.toJson(Map("success" -> "1", "msg" -> "Los datos de eliminaron exitosamente!")))
+        Dato.delete(dato)
+        Ok(Json.obj("success" -> "true", "data" -> Json.toJson(dato)))
       }
     }.recoverTotal {
-      e => BadRequest("Detected error:" + JsError.toFlatJson(e))
+      e => BadRequest(Json.obj("success" -> "false", "msg" -> JsError.toFlatJson(e)))
     }
     //BadRequest(Json.toJson(Map("success" -> "0", "msg" -> errors.toString))),
   }

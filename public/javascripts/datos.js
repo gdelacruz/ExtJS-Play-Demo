@@ -29,7 +29,7 @@ Ext.onReady(function() {
     var store = Ext.create('Ext.data.Store', {
         model: 'Datos',
         autoLoad: true,
-        autoSync: true,
+        autoSync: false,
         autoDestroy: true,
         proxy: {
             type: 'ajax',
@@ -41,6 +41,7 @@ Ext.onReady(function() {
             },
             reader: {
                 type: 'json',
+                root: 'data',
                 idProperty: 'id',
             },
             writer:{
@@ -55,6 +56,8 @@ Ext.onReady(function() {
         saveBtnText  : 'Guardar',
         cancelBtnText: 'Cancelar'
     });
+    
+
 
     var gridPanel = Ext.create('Ext.grid.Panel', {
         store: store,
@@ -125,6 +128,7 @@ Ext.onReady(function() {
                 if (store.getCount() > 0) {
                     sm.select(0);
                 }
+                store.sync();
             },
             disabled: true
         }],
@@ -132,7 +136,11 @@ Ext.onReady(function() {
         listeners: {
             'selectionchange': function(view, records) {
                 gridPanel.down('#eliminar').setDisabled(!records.length);
-            }
+            },
+		    'edit': function(editor, context, eOpts) {
+		    	context.store.sync();
+
+		    }
         }
 
     });
@@ -167,10 +175,12 @@ Ext.onReady(function() {
         buttons: [{
             text: 'Guardar',
             handler: function() {
-                var valores = formPanel.getValues();
-                Ext.Ajax.request({
-                    url: '/crear',
-                    params: valores,
+            	var form = formPanel.getForm();
+            	form.url='/crear';
+            	form.method='POST';
+            	form.jsonSubmit = true;
+                form.submit({
+                	scope: formPanel,
                     success: function(response){
                         var response = Ext.decode(response.responseText);
                         Ext.Msg.show({
