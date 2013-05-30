@@ -45,7 +45,7 @@ Ext.onReady(function() {
             },
             writer:{
                type: 'json', 
-               writeAllFields: false, 
+               writeAllFields: true, 
             },  
         }
     });
@@ -105,7 +105,7 @@ Ext.onReady(function() {
             handler : function() {
                 rowEditor.cancelEdit();
                 var r = Ext.create('Datos', {
-                    id: '',
+                    id: '0',
                     nombre: 'Nombre',
                     apellido: 'Apellido',
                     fechaNac: '2012-12-31',

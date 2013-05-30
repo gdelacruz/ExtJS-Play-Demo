@@ -14,11 +14,13 @@ object Datos extends Controller {
   def index = Action { Ok(views.html.index.render) }
 
   def crear = Action(parse.json) { request =>
-
     request.body.validate[Dato].map {
       case dato => {
         Dato.save(dato)
-        Ok(Json.toJson(Map("success" -> "1", "msg" -> "Los datos de guardaron exitosamente!")))
+        if(dato.id == 0)
+          Ok(Json.toJson(Dato.buscar))
+        else
+          Ok(Json.toJson(Map("success" -> "1", "msg" -> "Los datos de guardaron exitosamente!")))
       }
     }.recoverTotal {
       e => BadRequest("Detected error:" + JsError.toFlatJson(e))
@@ -31,7 +33,7 @@ object Datos extends Controller {
   }
 
   def actualizar = Action(parse.json) { request =>
-
+  	println("pase actualizar")
     request.body.validate[Dato].map {
       case dato => {
         Dato.update(dato)
@@ -47,7 +49,6 @@ object Datos extends Controller {
 
     request.body.validate[Dato].map {
       case dato => {
-        Dato.delete(dato)
         Ok(Json.toJson(Map("success" -> "1", "msg" -> "Los datos de eliminaron exitosamente!")))
       }
     }.recoverTotal {
