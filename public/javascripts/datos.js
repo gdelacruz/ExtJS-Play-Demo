@@ -160,7 +160,8 @@ Ext.onReady(function() {
         },
 
         items: [
-
+            {xtype: 'hiddenfield', name: 'id', value: 0},
+            
             {xtype: 'textfield', name: 'nombre', fieldLabel: 'Nombre', allowBlank: false},
 
             {xtype: 'textfield', name: 'apellido', fieldLabel: 'Apellido', allowBlank: false},
@@ -175,12 +176,13 @@ Ext.onReady(function() {
         buttons: [{
             text: 'Guardar',
             handler: function() {
-            	var form = formPanel.getForm();
-            	form.url='/crear';
-            	form.method='POST';
-            	form.jsonSubmit = true;
-                form.submit({
-                	scope: formPanel,
+            	var dato = Ext.create(Ext.ModelMgr.getModel('Datos'), formPanel.getValues());
+
+                var valores = Ext.encode(dato.data);
+
+                Ext.Ajax.request({
+                    url: '/crear',
+                    jsonData: valores,
                     success: function(response){
                         var response = Ext.decode(response.responseText);
                         Ext.Msg.show({

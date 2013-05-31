@@ -17,7 +17,7 @@ object Datos extends Controller {
     request.body.validate[Dato].map {
       case dato => {
         val newDato = Dato.save(dato)
-         Ok(Json.obj("success" -> "true", "data" -> Json.toJson(newDato)))
+         Ok(Json.obj("success" -> "true", "data" -> Json.toJson(newDato), "msg" -> "Los datos fueron guardados correctamente!"))
       }
     }.recoverTotal {
       e => BadRequest(Json.obj("success" -> "false", "msg" -> JsError.toFlatJson(e)))
@@ -34,7 +34,7 @@ object Datos extends Controller {
     request.body.validate[Dato].map {
       case dato => {
         Dato.update(dato)
-        Ok(Json.obj("success" -> "true", "data" -> Json.toJson(dato)))
+        Ok(Json.obj("success" -> "true", "data" -> Json.toJson(dato), "msg" -> "Los datos fueron modificados correctamente!"))
       }
     }.recoverTotal {
       e => BadRequest(Json.obj("success" -> "false", "msg" -> JsError.toFlatJson(e)))
@@ -47,7 +47,7 @@ object Datos extends Controller {
     request.body.validate[Dato].map {
       case dato => {
         Dato.delete(dato)
-        Ok(Json.obj("success" -> "true", "data" -> Json.toJson(dato)))
+        Ok(Json.obj("success" -> "true", "data" -> Json.toJson(dato), "msg" -> "Los datos fueron eliminados correctamente!"))
       }
     }.recoverTotal {
       e => BadRequest(Json.obj("success" -> "false", "msg" -> JsError.toFlatJson(e)))
